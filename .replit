@@ -1,8 +1,0 @@
-modules = ["lua-5.2"]
-run = "love ."
-
-[nix]
-channel = "stable-24_05"
-
-[deployment]
-run = ["sh", "-c", "love ."]

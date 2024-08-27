@@ -4,6 +4,7 @@ _G.love = require('love')
 function love.load()
     love.graphics.setBackgroundColor(100/255, 100/255, 100/255)
     _G.pacman = {
+        size = 50,
         x = 250,
         y = 250,
         angle1 = 1,
@@ -11,7 +12,7 @@ function love.load()
     }
 
     _G.food = {
-        x = 650,
+        x = 350,
         eaten = false
     }
 end
@@ -27,16 +28,16 @@ function love.update(dt)
 
 
     if love.keyboard.isDown("a") then
-        pacman.x = pacman.x - 10
+        pacman.x = pacman.x - 5
     end
     if love.keyboard.isDown("d") then
-        pacman.x = pacman.x + 10 
+        pacman.x = pacman.x + 5 
     end
     if love.keyboard.isDown("w") then
-        pacman.y = pacman.y - 10
+        pacman.y = pacman.y - 5
     end
     if love.keyboard.isDown("s") then
-        pacman.y = pacman.y + 10
+        pacman.y = pacman.y + 5
     end 
 
     if pacman.x >= food.x then
@@ -54,5 +55,5 @@ function love.draw()
     end
 
     love.graphics.setColor(1, 1, 0) -- caso pegue um rgb por fora, dividir por 255 se ele n for entre 0 e 1
-    love.graphics.arc('fill', pacman.x, pacman.y, 100, pacman.angle1, pacman.angle2)
+    love.graphics.arc('fill', pacman.x, pacman.y, pacman.size, pacman.angle1, pacman.angle2)
 end

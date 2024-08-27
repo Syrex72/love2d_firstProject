@@ -1,11 +1,11 @@
--- function love.conf(t)
+function love.conf(t)
 --     t.window.title = "balls"
 --     -- t.identity = "data/saves"
 --     -- t.version = "1.0.0" -- versão do love pro jogo 
 --     t.console = false
 
---     t.window.width = 500
---     t.window.height = 500
+    t.window.width = 500
+    t.window.height = 500
 --     t.window.borderless = false -- não é adequado forçar aos usuarios, opicional    
 --     t.window.vsync = 0 -- mesmo caso do borderless
 --     t.window.display = 1 -- em qual monitor o app vai abrir
@@ -31,4 +31,4 @@
 --     -- t.window.maxheight
 --     -- t.window.maxwidth
     
--- end
+end

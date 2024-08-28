@@ -1,59 +1,102 @@
 _G.love = require('love')
 
-
 function love.load()
-    love.graphics.setBackgroundColor(100/255, 100/255, 100/255)
-    _G.pacman = {
-        size = 50,
-        x = 250,
-        y = 250,
-        angle1 = 1,
-        angle2 = 5
+    love.graphics.setDefaultFilter("nearest", "nearest")
+    _G.uganda = {
+        x = 0,
+        y = 0,
+        -- 36w x 72h
+        sprite = {
+            image = love.graphics.newImage("assets/uganda.png"),
+            w = 36,
+            h = 72
+        },
+        animation = {
+            direction = "down",
+            direction_sprite = 1,
+            idle = true, 
+            frame = 1,
+            max_frames = 3,
+            speed = 2,
+            timer = 0.1
+        }
+        
     }
 
-    _G.food = {
-        x = 350,
-        eaten = false
+    _G.sprite_size = {
+        w = 12,
+        h = 18
     }
+
+    _G.quads = {}
+    for i = 1, 4 do
+        quads[i] = {}
+        for j = 1, 3 do
+            quads[i][j] = love.graphics.newQuad(sprite_size.w * (j-1), sprite_size.h * (i-1), sprite_size.w, sprite_size.h, uganda.sprite.w, uganda.sprite.h)
+        end
+    end
+
+    
 end
 
 function love.update(dt)
-    if love.keyboard.isDown("down") then
-        pacman.angle2 = pacman.angle2 + math.pi * dt
-        pacman.angle1 = pacman.angle1 + math.pi * dt
-    elseif love.keyboard.isDown("up") then
-        pacman.angle1 = pacman.angle1 - math.pi * dt
-        pacman.angle2 = pacman.angle2 - math.pi * dt
-    end
-
-
-    if love.keyboard.isDown("a") then
-        pacman.x = pacman.x - 5
-    end
-    if love.keyboard.isDown("d") then
-        pacman.x = pacman.x + 5 
-    end
+    -- ativando e desativando a iddle animation e definindo a direção que meu player está indo 
     if love.keyboard.isDown("w") then
-        pacman.y = pacman.y - 5
+        uganda.animation.idle = false
+        uganda.animation.direction = "up"
+    elseif love.keyboard.isDown("d") then
+        uganda.animation.idle = false
+        uganda.animation.direction = "right"
+    elseif love.keyboard.isDown("a") then
+        uganda.animation.idle = false
+        uganda.animation.direction = "left"
+    elseif love.keyboard.isDown("s") then
+        uganda.animation.idle = false
+        uganda.animation.direction = "down"
+    else
+        uganda.animation.idle = true
+        uganda.animation.frame = 1
     end
-    if love.keyboard.isDown("s") then
-        pacman.y = pacman.y + 5
-    end 
 
-    if pacman.x >= food.x then
-        food.eaten = true
+    -- define o tempo para executar a animação
+    if not uganda.animation.idle then
+        uganda.animation.timer = uganda.animation.timer + dt
+        
+        -- fica resetando o time sla pq 
+        if uganda.animation.timer > 0.2 then
+            uganda.animation.timer = 0.1 
+            -- passa para o proximo frame
+            uganda.animation.frame = uganda.animation.frame + 1
+
+            if uganda.animation.direction == "right" then
+                uganda.x = uganda.x + uganda.animation.speed
+                uganda.animation.direction_sprite = 3
+            elseif uganda.animation.direction == "up"  then
+                uganda.y = uganda.y - uganda.animation.speed
+                uganda.animation.direction_sprite = 2
+
+            elseif uganda.animation.direction == "down" then
+                uganda.y = uganda.y + uganda.animation.speed
+                uganda.animation.direction_sprite = 1
+                
+            elseif uganda.animation.direction == "left" then
+                uganda.x = uganda.x - uganda.animation.speed
+                uganda.animation.direction_sprite = 4
+
+            end
+            -- reseta os frames quando chega no tamanho máximo
+            if uganda.animation.frame > uganda.animation.max_frames then
+                uganda.animation.frame = 1
+            end
+        end
     end
+
 end
 
 function love.draw()
-    -- love.graphics.setColor(0, 0, 1) -- caso pegue um rgb por fora, dividir por 255 se ele n for entre 0 e 1
-    -- love.graphics.rectangle('fill', 0, 0, 100, 100)
     
-    if not food.eaten then
-        love.graphics.setColor(0, 1, 0) -- caso pegue um rgb por fora, dividir por 255 se ele n for entre 0 e 1
-        love.graphics.circle('fill', food.x, 250, 50)        
-    end
-
-    love.graphics.setColor(1, 1, 0) -- caso pegue um rgb por fora, dividir por 255 se ele n for entre 0 e 1
-    love.graphics.arc('fill', pacman.x, pacman.y, pacman.size, pacman.angle1, pacman.angle2)
+    love.graphics.scale(10)
+    love.graphics.draw(uganda.sprite.image, quads[uganda.animation.direction_sprite][uganda.animation.frame], uganda.x, uganda.y)
 end
+
+

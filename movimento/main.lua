@@ -7,7 +7,7 @@ function love.load()
         y = 0,
         -- 36w x 72h
         sprite = {
-            image = love.graphics.newImage("assets/uganda.png"),
+            image = love.graphics.newImage("uganda.png"),
             w = 36,
             h = 72
         },

@@ -7,10 +7,9 @@ function Button(text, func, func_param, width, heigth)
         heigth = heigth or 40,
 
         func = func or function ()
-            print("Empty Button")
+            love.graphics.print("Empty Button")
         end,
         func_param = func_param,
-
 
         button_x = 0,
         button_y = 0,
@@ -22,10 +21,8 @@ function Button(text, func, func_param, width, heigth)
             if (mouse_x + cursor_radius >= self.button_x) and (mouse_x - cursor_radius <= self.button_x + self.width) then
                 if (mouse_y + cursor_radius >= self.button_y) and (mouse_y - cursor_radius <= self.button_y + self.heigth) then
                     if self.func_param then
-                        love.graphics.print("clicado 1", 100, 50)
                         self.func(self.func_param)
                     else
-                        love.graphics.print("clicado 2", 100, 50)
                         self.func()
                     end
                 end
@@ -48,9 +45,6 @@ function Button(text, func, func_param, width, heigth)
                 self.text_y = self.button_y
             end
 
-            love.graphics.print("tx:" .. self.text_x .. "ty: " .. self.text_y, 100, 50)
-            love.graphics.print("bx:" .. self.button_x .. "by: " .. self.button_y, 100, 70)
-            
             love.graphics.setColor(0 , 0, 1)
             love.graphics.rectangle("fill", self.button_x, self.button_y, self.width, self.heigth)
 
@@ -58,9 +52,6 @@ function Button(text, func, func_param, width, heigth)
             love.graphics.print(self.text, self.text_x, self.text_y)
             -- love.graphics.print(self.text, 0, 0)
 
-
-            
-  
             love.graphics.setColor(1, 1, 1)
         end
     }

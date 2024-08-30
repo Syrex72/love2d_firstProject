@@ -26,41 +26,46 @@ local buttons = {
     menu_state = {},
 }
 
+local function startGame()
+    game.state["menu"] = false
+    game.state["running"] = true
 
-function love.mousepressed(x, y, button, istouch, presses)
-    if not game.state["running"] then
-        if button == 1 then
-            if game.state["menu"] then
-                for index in ipairs(buttons.menu_state) do
-                    buttons.menu_state[index]:checkPressed(x, y, player.radius)
-                end
-            end
-        end
-    end   
+    table.insert(enemies, 1, enemy())
 end
 
 function love.load()
     love.window.setTitle("bolas")
     love.mouse.setVisible(false)
 
-    buttons.menu_state.play_game = button("Play game", nil, nil)
+    buttons.menu_state.play_game = button("Play game", startGame, nil)
     buttons.menu_state.settings = button("Settings", nil, nil)
     buttons.menu_state.exit_game = button("Exit", love.event.quit, nil)
-    table.insert(enemies, 1, enemy())
 end
 
 function love.update(dt)
     player.x, player.y = love.mouse.getPosition()
+    
+    if game.state["running"] then
+        for i = 1, #enemies do
+            enemies[i]:move(player.x, player.y)
+        end
+    end
 
-    for i = 1, #enemies do
-        enemies[i]:move(player.x, player.y)
+end
+
+function love.mousepressed(x, y, button, istouch, presses)
+    if not game.state["running"] then
+        if button == 1 then
+            if game.state["menu"] then
+                for index in pairs(buttons.menu_state) do
+                    buttons.menu_state[index]:checkPressed(x, y, player.radius)
+                end
+            end
+        end
     end
 end
 
 function love.draw()
-    
-    local x, y = love.mouse.getPosition()
-    love.graphics.print("x: ".. x .. " y: " .. y , 100, 100)
     love.graphics.printf(
         "FPS: " .. love.timer.getFPS(), 
         love.graphics.newFont(16),
@@ -68,7 +73,7 @@ function love.draw()
         love.graphics.getWidth()
     )
 
-    if game.state["runni1ng"] then 
+    if game.state["running"] then 
         love.graphics.circle("fill", player.x, player.y, player.radius)
         for i = 1, #enemies do
             enemies[i]:draw()

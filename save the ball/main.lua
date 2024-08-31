@@ -11,13 +11,15 @@ local game = {
         pause = false,
         running = false,
         ended = false
-    }
+    },
+    levels = {15, 30, 60, 120}
 }
 
 local player = {
     x = 30,
     y = 30,
-    radius = 20
+    radius = 20,
+    points = 0
 }
 
 local enemies = {}
@@ -26,11 +28,21 @@ local buttons = {
     menu_state = {},
 }
 
-local function startGame()
-    game.state["menu"] = false
-    game.state["running"] = true
+local function changeGameState(state)
+    game.state["menu"] = (state == "menu")
+    game.state["pause"] = (state == "paused")
+    game.state["running"] = (state == "running")
+    game.state["ended"] = (state == "ended")
+end
 
-    table.insert(enemies, 1, enemy())
+
+local function startGame()
+    changeGameState("running")
+    player.points = 0
+
+    enemies = {
+        enemy(1),
+    }
 end
 
 function love.load()
@@ -47,11 +59,23 @@ function love.update(dt)
     
     if game.state["running"] then
         for i = 1, #enemies do
+            if not enemies[i]:checkTouched(player.x, player.y, player.radius) then
+                player.points = player.points + dt
+                
+                for l = 1, #game.levels do
+                    if math.floor(player.points) == game.levels[l] then
+                        table.insert(enemies, 1, enemy(game.difficulty * (l + 1)))
+                        player.points = player.points + 1
+                    end
+                end
+            else
+                changeGameState("menu")
+            end
             enemies[i]:move(player.x, player.y)
         end
     end
-
 end
+
 
 function love.mousepressed(x, y, button, istouch, presses)
     if not game.state["running"] then
@@ -74,6 +98,7 @@ function love.draw()
     )
 
     if game.state["running"] then 
+        love.graphics.print(math.floor(player.points), love.graphics.newFont(24), love.graphics.getWidth() / 2, 0)
         love.graphics.circle("fill", player.x, player.y, player.radius)
         for i = 1, #enemies do
             enemies[i]:draw()
